@@ -9,25 +9,32 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by aaravind on 07/09/2016.
  */
-public class ImageListAdapter extends ArrayAdapter {
+public class ImageListAdapter extends ArrayAdapter<String> {
     private Context context;
     private LayoutInflater inflater;
 
     private List<String> imageUrls;
 
-    public ImageListAdapter(Context context, List<String> imageUrls) {
-        super(context, R.layout.grid_view_item, imageUrls);
+    public ImageListAdapter(Context context, ArrayList<String> imageUrls) {
+        super(context, R.layout.grid_view_item, R.id.grid_item_movie_poster, imageUrls);
 
         this.context = context;
         this.imageUrls = imageUrls;
 
-        inflater = LayoutInflater.from(context);
+       // inflater = LayoutInflater.from(context);
     }
+
+    @Override
+    public int getCount(){
+        return imageUrls.size();
+    }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -38,7 +45,6 @@ public class ImageListAdapter extends ArrayAdapter {
         Picasso
                 .with(context)
                 .load(imageUrls.get(position))
-                .fit() // will explain later
                 .into((ImageView) convertView);
 
         return convertView;

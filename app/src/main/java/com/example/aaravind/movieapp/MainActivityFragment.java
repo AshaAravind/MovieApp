@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -30,31 +32,40 @@ import java.util.ArrayList;
  */
 public class MainActivityFragment extends Fragment {
 
-    public ArrayAdapter<String> arrayAdapter;
-
-    public ImageListAdapter imageListAdapter;
-
     public MainActivityFragment() {
     }
 
-    //String[] posterUrls = new String[25];
-    //List<String> posters = ;
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovies();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    public ImageListAdapter imageListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        updateMovies();
-        //arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.grid_view_item, R.id.grid_view_item, new ArrayList<String>());
+
         imageListAdapter = new ImageListAdapter(getActivity(), new ArrayList<String>());
+
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
         gridView.setAdapter(imageListAdapter);
+        imageListAdapter.notifyDataSetChanged();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
+                ///  Intent detailActivity = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, arrayAdapter.getItem(position));
+                //startActivity(detailActivity);
             }
         });
 
@@ -62,9 +73,20 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        updateMovies();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        //inflater.inflate(R.menu.forecastfragment, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        //if (itemId == R.id.action_refresh) {
+          //  updateWeather();
+            //return true;
+        //}
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateMovies() {
@@ -84,10 +106,6 @@ public class MainActivityFragment extends Fragment {
             String[] movieData = null;
 
             try {
-                // Construct the URL for the OpenWeatherMap query
-                // Possible parameters are available at OWM's forecast API page, at
-                // http://openweathermap.org/API#forecast
-
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder.scheme("http")
                         .authority("api.themoviedb.org")
@@ -125,8 +143,7 @@ public class MainActivityFragment extends Fragment {
 
             } catch (IOException e) {
                 Log.e("PlaceholderFragment", "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attempting
-                // to parse it.
+
                 movieJson = null;
             } finally {
                 if (urlConnection != null) {
@@ -163,18 +180,15 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] strings) {
-//            arrayAdapter.clear();
+            imageListAdapter.clear();
             int j=0;
             if(strings != null) {
                 for (String s : strings) {
                     if(s != null) {
-                       // posterUrls[j] = "http://image.tmdb.org/t/p/w185/"+s;
-                        //j++;
                         imageListAdapter.add("http://image.tmdb.org/t/p/w185/"+s);
                     }
                 }
             }
-         //   String[] sample = posterUrls;
         }
     }
 }
