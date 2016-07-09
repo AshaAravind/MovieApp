@@ -32,18 +32,23 @@ public class MainActivityFragment extends Fragment {
 
     public ArrayAdapter<String> arrayAdapter;
 
+    public ImageListAdapter imageListAdapter;
+
     public MainActivityFragment() {
     }
+
+    //String[] posterUrls = new String[25];
+    //List<String> posters = ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.grid_view_item, R.id.grid_view_item, new ArrayList<String>());
-
+        updateMovies();
+        //arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.grid_view_item, R.id.grid_view_item, new ArrayList<String>());
+        imageListAdapter = new ImageListAdapter(getActivity(), new ArrayList<String>());
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
-        gridView.setAdapter(arrayAdapter);
+        gridView.setAdapter(imageListAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -158,12 +163,18 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] strings) {
-            arrayAdapter.clear();
+//            arrayAdapter.clear();
+            int j=0;
             if(strings != null) {
                 for (String s : strings) {
-                    arrayAdapter.add(s);
+                    if(s != null) {
+                       // posterUrls[j] = "http://image.tmdb.org/t/p/w185/"+s;
+                        //j++;
+                        imageListAdapter.add("http://image.tmdb.org/t/p/w185/"+s);
+                    }
                 }
             }
+         //   String[] sample = posterUrls;
         }
     }
 }
